@@ -1,0 +1,125 @@
+{
+  "Comment": "Data pipeline: Lambda ingestion then parallel Glue ETL jobs",
+  "StartAt": "StreamingIngest_OpenAlex",
+  "States": {
+
+    "StreamingIngest_OpenAlex": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "openalex-ingestion",
+        "Payload.$": "$"
+      },
+      "ResultPath": "$.lambdaResult",
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.AWSLambdaException",
+                          "Lambda.SdkClientException", "Lambda.TooManyRequestsException"],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "PipelineFailed",
+          "ResultPath": "$.error"
+        }
+      ],
+      "Next": "RunETLJobsInParallel"
+    },
+
+    "RunETLJobsInParallel": {
+      "Type": "Parallel",
+      "Branches": [
+        {
+          "StartAt": "BatchETL_BorderCrossing",
+          "States": {
+            "BatchETL_BorderCrossing": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::glue:startJobRun.sync",
+              "Parameters": {
+                "JobName": "border-crossing-etl"
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": ["Glue.ConcurrentRunsExceededException"],
+                  "IntervalSeconds": 30,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 1.5
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "BatchETL_BorderCrossingFailed",
+                  "ResultPath": "$.error"
+                }
+              ],
+              "End": true
+            },
+            "BatchETL_BorderCrossingFailed": {
+              "Type": "Fail",
+              "Error": "BatchETL_BorderCrossingError",
+              "Cause": "The border-crossing-etl Glue job failed. Check Glue job logs."
+            }
+          }
+        },
+        {
+          "StartAt": "StreamingETL_OpenAlex",
+          "States": {
+            "StreamingETL_OpenAlex": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::glue:startJobRun.sync",
+              "Parameters": {
+                "JobName": "openalex-etl"
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": ["Glue.ConcurrentRunsExceededException"],
+                  "IntervalSeconds": 30,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 1.5
+                }
+              ],
+              "Catch": [
+                {
+                  "ErrorEquals": ["States.ALL"],
+                  "Next": "StreamingETL_OpenAlexFailed",
+                  "ResultPath": "$.error"
+                }
+              ],
+              "End": true
+            },
+            "StreamingETL_OpenAlexFailed": {
+              "Type": "Fail",
+              "Error": "StreamingETL_OpenAlexError",
+              "Cause": "The openalex-etl Glue job failed. Check Glue job logs."
+            }
+          }
+        }
+      ],
+      "ResultPath": "$.glueResults",
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "PipelineFailed",
+          "ResultPath": "$.error"
+        }
+      ],
+      "Next": "PipelineSucceeded"
+    },
+
+    "PipelineSucceeded": {
+      "Type": "Succeed"
+    },
+
+    "PipelineFailed": {
+      "Type": "Fail",
+      "Error": "PipelineError",
+      "Cause": "One or more pipeline stages failed. Check execution details."
+    }
+
+  }
+}
