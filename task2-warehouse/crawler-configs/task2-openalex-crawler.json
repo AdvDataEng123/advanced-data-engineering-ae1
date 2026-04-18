@@ -1,0 +1,50 @@
+{
+    "Crawler": {
+        "Name": "openalex-crawler",
+        "Role": "LabRole",
+        "Targets": {
+            "S3Targets": [
+                {
+                    "Path": "s3://ae1-data-lake/cleaned/openalex/",
+                    "Exclusions": []
+                }
+            ],
+            "JdbcTargets": [],
+            "MongoDBTargets": [],
+            "DynamoDBTargets": [],
+            "CatalogTargets": [],
+            "DeltaTargets": [],
+            "IcebergTargets": [],
+            "HudiTargets": []
+        },
+        "DatabaseName": "data_warehouse",
+        "Classifiers": [],
+        "RecrawlPolicy": {
+            "RecrawlBehavior": "CRAWL_EVERYTHING"
+        },
+        "SchemaChangePolicy": {
+            "UpdateBehavior": "UPDATE_IN_DATABASE",
+            "DeleteBehavior": "DEPRECATE_IN_DATABASE"
+        },
+        "LineageConfiguration": {
+            "CrawlerLineageSettings": "DISABLE"
+        },
+        "State": "READY",
+        "CrawlElapsedTime": 0,
+        "CreationTime": "2026-04-15T17:59:43+00:00",
+        "LastUpdated": "2026-04-15T17:59:43+00:00",
+        "LastCrawl": {
+            "Status": "SUCCEEDED",
+            "LogGroup": "/aws-glue/crawlers",
+            "LogStream": "openalex-crawler",
+            "MessagePrefix": "65ef9bdc-5150-429d-b10a-0fb02d43a16e",
+            "StartTime": "2026-04-15T18:08:54+00:00"
+        },
+        "Version": 1,
+        "Configuration": "{\"Version\":1.0,\"CreatePartitionIndex\":true}",
+        "LakeFormationConfiguration": {
+            "UseLakeFormationCredentials": false,
+            "AccountId": ""
+        }
+    }
+}

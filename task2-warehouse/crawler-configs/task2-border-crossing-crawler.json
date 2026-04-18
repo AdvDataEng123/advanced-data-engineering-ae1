@@ -1,0 +1,51 @@
+{
+    "Crawler": {
+        "Name": "border-crossing-crawler",
+        "Role": "LabRole",
+        "Targets": {
+            "S3Targets": [
+                {
+                    "Path": "s3://ae1-data-lake/cleaned/border_crossing/",
+                    "Exclusions": []
+                }
+            ],
+            "JdbcTargets": [],
+            "MongoDBTargets": [],
+            "DynamoDBTargets": [],
+            "CatalogTargets": [],
+            "DeltaTargets": [],
+            "IcebergTargets": [],
+            "HudiTargets": []
+        },
+        "DatabaseName": "data_warehouse",
+        "Description": "scans cleaned border crossing parquet data",
+        "Classifiers": [],
+        "RecrawlPolicy": {
+            "RecrawlBehavior": "CRAWL_EVERYTHING"
+        },
+        "SchemaChangePolicy": {
+            "UpdateBehavior": "UPDATE_IN_DATABASE",
+            "DeleteBehavior": "DEPRECATE_IN_DATABASE"
+        },
+        "LineageConfiguration": {
+            "CrawlerLineageSettings": "DISABLE"
+        },
+        "State": "READY",
+        "CrawlElapsedTime": 0,
+        "CreationTime": "2026-04-15T17:56:41+00:00",
+        "LastUpdated": "2026-04-15T17:56:41+00:00",
+        "LastCrawl": {
+            "Status": "SUCCEEDED",
+            "LogGroup": "/aws-glue/crawlers",
+            "LogStream": "border-crossing-crawler",
+            "MessagePrefix": "f7af71be-c5cf-4a4c-83ec-76dccd112244",
+            "StartTime": "2026-04-15T18:00:38+00:00"
+        },
+        "Version": 1,
+        "Configuration": "{\"Version\":1.0,\"CreatePartitionIndex\":true}",
+        "LakeFormationConfiguration": {
+            "UseLakeFormationCredentials": false,
+            "AccountId": ""
+        }
+    }
+}
