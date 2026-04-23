@@ -19,6 +19,9 @@ Everything runs in the AWS Academy Learner Lab (us-east-1, LabRole).
 - `task2-warehouse/` - Athena SQL queries, Glue crawler configs
 - `task3-visualisation/` - Extended workflow JSON, Athena export query
 - `screenshots/` - All screenshots organised by task (task1-*, task2-*, task3-*)
+- `docs/` - The report (markdown + docx)
+
+> **Note on screenshots.** Some screenshots in `screenshots/` have small black rectangles covering identifying information (AWS Academy username, 12-digit Account ID, ARNs containing the account ID, the bucket suffix that included my GitHub username, and my email where it appears in code). The screenshots are otherwise unedited. Code and configuration in this repo do not contain any of the redacted values.
 
 ## Running the pipeline
 
