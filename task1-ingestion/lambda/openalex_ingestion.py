@@ -33,7 +33,7 @@ def fetch_page(cursor):
         "per-page": PAGE_SIZE,
         "cursor": cursor,
         "select": "id,title,publication_date,doi,authorships,concepts,open_access,cited_by_count",
-        "mailto": "student@example.com",
+        "mailto": "anonymous@example.com",
     }
     url = "https://api.openalex.org/works?" + urllib.parse.urlencode(params)
 
